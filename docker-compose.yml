@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: kernel528/mongodb-community-server:8.0.4-ubuntu2204
+    container_name: mongodb-obiwan
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: joemongo
+      MONGO_INITDB_ROOT_PASSWORD: l0calm0ngoD0ck
+    volumes:
+      - mongo-obiwan-data:/data/db
+
+  mongo-seed:
+    build:
+      context: ./mongo-seed
+    depends_on:
+      - mongodb
+    environment:
+      MONGO_URI: mongodb://joemongo:l0calm0ngoD0ck@mongodb-obiwan:27017/obiwan-db?authSource=admin
+    volumes:
+      - ./mongo-seed/collections:/collections
+    entrypoint: /init.sh
+
+volumes:
+  mongo-obiwan-data:
