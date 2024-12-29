@@ -1,24 +1,28 @@
 version: '3.8'
 
+# Starts core mongodb instance
 services:
   mongodb:
     image: kernel528/mongodb-community-server:8.0.4-ubuntu2204
-    container_name: mongodb-obiwan
+    container_name: mongodb-obiwan # Update to different name if desired.
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: joemongo
-      MONGO_INITDB_ROOT_PASSWORD: l0calm0ngoD0ck
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_INITDB_ROOT_USERNAME # Set environment variable or statically set at runtime
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_INITDB_ROOT_PASSWORD # Set environment variable or statically set at runtime
+      MONGO_HOSTNAME: $MONGO_HOSTNAME # Set environment variable or statically set at runtime
+      MONGO_DATABASE_NAME: $MONGO_DATABASE_NAME # Set environment variable or statically set at runtime
     volumes:
       - mongo-obiwan-data:/data/db
 
+  # Starts container to run the data seeding from init.sh.
   mongo-seed:
     build:
       context: ./mongo-seed
     depends_on:
       - mongodb
     environment:
-      MONGO_URI: mongodb://joemongo:l0calm0ngoD0ck@mongodb-obiwan:27017/obiwan-db?authSource=admin
+      MONGO_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@${MONGO_HOSTNAME}:27017/${MONGO_DATABASE_NAME}?authSource=admin
     volumes:
       - ./mongo-seed/collections:/collections
     entrypoint: /init.sh

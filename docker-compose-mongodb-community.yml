@@ -10,7 +10,7 @@ services:
   mongodb:
     image: mongodb/mongodb-community-server:8.0.4-ubuntu2204
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=joe
+      - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=pass
     volumes:
       - type: bind
