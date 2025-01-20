@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: kernel528/mongodb-community-server:8.0.4-amd64
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager  # Optional: Run only on manager
+      resources:
+        limits:
+          memory: 512M
+
+volumes:
+  mongodb-data:
+    driver: local
+    driver_opts:
+      type: "nfs"
+      o: "addr=scarif,rw"
+      device: ":/volume1/docker-swarm/mongodb_data/mongodb_swarm"
