@@ -21,6 +21,11 @@ project-root/
 docker image build -t kernel528/mongodb:8.0.4-ubuntu2204 -f Dockerfile .
 ```
 
+### Drone Builds
+- This uses the kernel528/mongodb-community-server docker hub source `FROM`.
+- This is a copy of the main mongodb/mongodb-community-server source hub.
+- The .drone.yml base configuration just rebuilds this with potential configuration customizations into kernel528/mongodb.
+
 ### How to Use - Standalone
 ```aiignore
 docker container run -it --name mongodb-obiwan --hostname mongo-docker -d -p 27017:27017 -v mongo-obiwan-data:/data/db mongodb/mongodb-community-server:8.0.4-ubuntu2204
