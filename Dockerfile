@@ -1,4 +1,3 @@
-#FROM mongodb/mongodb-community-server:8.0.4-ubuntu2204
 FROM kernel528/mongodb-community-server:8.0.4-amd64
 LABEL authors="kernel528@gmail.com"
 
