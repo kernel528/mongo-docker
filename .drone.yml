@@ -76,7 +76,7 @@ steps:
       event:
         - push
     commands:
-      - cat /etc/alpine-release
+      - cat /etc/os-release
       - mongodb -v
 
   # Slack notification
