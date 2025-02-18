@@ -77,7 +77,7 @@ steps:
         - push
     commands:
       - cat /etc/os-release
-      - mongodb -v
+      - mongod --version
 
   # Slack notification
   - name: slack-notification
