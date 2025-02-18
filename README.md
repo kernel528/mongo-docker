@@ -1,4 +1,4 @@
-[![Drone Build Status](http://drone.kernelsanders.biz:8080/api/badges/kernel528/mongo-docker/status.svg)](http://drone.kernelsanders.biz:8080/kernel528/mongo-docker)
+[![Build Status](http://drone.kernelsanders.biz:8080/api/badges/kernel528/mongo-docker/status.svg?ref=refs/heads/main)](http://drone.kernelsanders.biz:8080/kernel528/mongo-docker)
 [![Latest Version](https://img.shields.io/github/v/tag/kernel528/mongo-docker)](https://github.com/kernel528/mongo-docker/releases/latest)
 
 
