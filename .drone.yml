@@ -1,0 +1,91 @@
+kind: pipeline
+type: docker
+name: mongodb-amd64
+
+trigger:
+  branch:
+    - '8'
+  event:
+    - pull_request
+
+# Build the docker image for amd64 architecture
+steps:
+  - name: mongodb-image-build-amd64
+    image: plugins/docker
+    environment:
+      DOCKER_BUILDKIT: 1
+    settings:
+      platforms:
+        - linux/amd64
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: kernel528/mongodb
+      tags:
+        - latest
+        - '8'
+        - '8.0.4'
+        - '8.0.4-drone-build-${DRONE_BUILD_NUMBER}-amd64'
+
+  # Slack notification
+  - name: slack-notification
+    image: plugins/slack
+    when:
+      status:
+        - failure
+        - success
+    settings:
+      webhook:
+        from_secret: slack_webhook_drone_alerts
+---
+
+kind: pipeline
+type: docker
+name: main-mongodb-amd64
+
+trigger:
+  event:
+    - push
+    - tag
+  branch:
+    - main
+
+# Build the docker image for the main branch & tagged release
+steps:
+  - name: main-docker-image-build
+    image: plugins/docker
+    when:
+      event:
+        - tag
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: kernel528/mongodb
+      tags:
+        - ${DRONE_TAG}
+
+  # Test docker image
+  - name: latest-mongodb-amd64-test
+    image: kernel528/mongodb:latest
+    when:
+      branch:
+        - main
+      event:
+        - push
+    commands:
+      - cat /etc/alpine-release
+      - mongodb -v
+
+  # Slack notification
+  - name: slack-notification
+    image: plugins/slack
+    when:
+      status:
+        - failure
+        - success
+    settings:
+      webhook:
+        from_secret: slack_webhook_drone_alerts
