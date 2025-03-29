@@ -3,6 +3,7 @@
 
 
 ### MongoDB Community Edition Docker Image
+This is based on the mongodb/mongodb-community-server:8.0.4-ubuntu2204 --platform=linux/amd64
 
 ### Project Structure
 ```
@@ -33,6 +34,11 @@ docker container run -it --name mongodb-obiwan --hostname mongo-docker -d -p 270
 - Then can use MongoDB Compass to connect to DB at mongodb://localhost:27017 (no auth)
 - The customized [starter-express-mongoose](https://github.com/kernel528/starter-express-mongoose) can be used to launch a local mongoose node app.
   - This is just currently setup to support a /users route for testing.
+
+### Docker Swarm Deployment
+- The `docker-compose-stack.yml` is the base configuration to deploy using docker swarm cluster.
+- This is deployed using the `portainer` based manager for the cluster.
+- This includes a NAS hosted volume to provide data persistence.
 
 ### How to Use - docker-compose (_Work in Progress_)
 - This is a work in progress
