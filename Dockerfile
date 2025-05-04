@@ -1,6 +1,5 @@
 # This is based on mongodb/mongodb-community-server:8.0.4-ubuntu2204 --platform=linux/amd64
-#FROM kernel528/mongodb-community-server:8.0.4-amd64
-FROM kernel528/mongodb-community-server:8.0.4-20250329T075056Z-amd64
+FROM kernel528/mongodb-community-server:8.0.4-ubuntu2204-20250503T074403Z-amd64
 LABEL authors="kernel528@gmail.com"
 
 # Set environment variables for MongoDB initialization
