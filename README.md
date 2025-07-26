@@ -20,11 +20,13 @@ project-root/
 ### Base Image Prep Steps
 - Pull upstream mongodb/mongodb-community-server:VERSION image, tag to kernel528/mongodb-community-server:VERSION, Push image... 
    ```bash
-     : docker image pull mongodb/mongodb-community-server:8.0.7-ubuntu2204-20250725T075524Z
+     : docker image pull mongodb/mongodb-community-server:8.0.7-ubuntu2204-20250725T075524Z --platform linux/amd64
      
      : docker image ls | grep mongodb
-     mongodb/mongodb-community-server   8.0.7-ubuntu2204-20250725T075524Z   2791ecfce697   23 hours ago   1.26GB
-        
+     mongodb/mongodb-community-server   8.0.7-ubuntu2204-20250725T075524Z   93a6d70c235a   23 hours ago   1.26GB
+     
+     : docker image tag 93a6d70c235a kernel528/mongodb-community-server:8.0.7-ubuntu2204-20250725T075524Z-amd64
+     
      : docker image push kernel528/mongodb-community-server:8.0.7-ubuntu2204-20250725T075524Z-amd64
    ```
 - Update the Dockerfile with the new base image to pull.
