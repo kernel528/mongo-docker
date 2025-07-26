@@ -17,6 +17,19 @@ project-root/
 |           |__ collection1.json
 │           └── collection2.json
 ```
+### Base Image Prep Steps
+- Pull upstream mongodb/mongodb-community-server:VERSION image, tag to kernel528/mongodb-community-server:VERSION, Push image... 
+   ```bash
+     : docker image pull mongodb/mongodb-community-server:8.0.7-ubuntu2204-20250725T075524Z
+     
+     : docker image ls | grep mongodb
+     mongodb/mongodb-community-server   8.0.7-ubuntu2204-20250725T075524Z   2791ecfce697   23 hours ago   1.26GB
+        
+     : docker image push kernel528/mongodb-community-server:8.0.7-ubuntu2204-20250725T075524Z-amd64
+   ```
+- Update the Dockerfile with the new base image to pull.
+- Update the .drone.yml with updated version tags.
+
 ### Build Base Image
 ```aiignore
 docker image build -t kernel528/mongodb:8.0.4-ubuntu2204 -f Dockerfile .
