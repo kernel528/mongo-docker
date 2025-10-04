@@ -3,7 +3,7 @@
 
 
 ### MongoDB Community Edition Docker Image
-This is based on the mongodb/mongodb-community-server:8.0.4-ubuntu2204 --platform=linux/amd64
+This is based on the mongodb/mongodb-community-server:8.0.15-ubuntu2204 --platform=linux/amd64
 
 ### Project Structure
 ```
