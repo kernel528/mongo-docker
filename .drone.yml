@@ -25,8 +25,8 @@ steps:
       tags:
         - latest
         - '8'
-        - '8.0.15'
-        - '8.0.15-drone-build-${DRONE_BUILD_NUMBER}-amd64'
+        - '8.0.16-rc1'
+        - '8.0.16-rc1-drone-build-${DRONE_BUILD_NUMBER}-amd64'
 
   # Slack notification
   - name: slack-notification
