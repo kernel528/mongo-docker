@@ -3,7 +3,8 @@
 
 
 ### MongoDB Community Edition Docker Image
-This is based on the mongodb/mongodb-community-server:8.0.15-ubuntu2204 --platform=linux/amd64
+This is based on the https://hub.docker.com/layers/mongodb/mongodb-community-server/8.2-ubuntu2204/
+--platform=linux/amd64
 
 ### Project Structure
 ```
@@ -20,21 +21,21 @@ project-root/
 ### Base Image Prep Steps
 - Pull upstream mongodb/mongodb-community-server:VERSION image, tag to kernel528/mongodb-community-server:VERSION, Push image... 
    ```bash
-     : docker image pull mongodb/mongodb-community-server:8.0.7-ubuntu2204-20250725T075524Z --platform linux/amd64
+     : docker image pull mongodb/mongodb-community-server:8.2.3-ubuntu2204 --platform linux/amd64
      
      : docker image ls | grep mongodb
-     mongodb/mongodb-community-server   8.0.7-ubuntu2204-20250725T075524Z   93a6d70c235a   23 hours ago   1.26GB
+     mongodb/mongodb-community-server   8.2.3-ubuntu2204   93a6d70c235a   23 hours ago   1.26GB
      
-     : docker image tag 93a6d70c235a kernel528/mongodb-community-server:8.0.7-ubuntu2204-20250725T075524Z-amd64
+     : docker image tag 93a6d70c235a kernel528/mongodb-community-server:8.2.3-ubuntu2204-amd64
      
-     : docker image push kernel528/mongodb-community-server:8.0.7-ubuntu2204-20250725T075524Z-amd64
+     : docker image push kernel528/mongodb-community-server:8.2.3-ubuntu2204-amd64
    ```
 - Update the Dockerfile with the new base image to pull.
 - Update the .drone.yml with updated version tags.
 
 ### Build Base Image
 ```aiignore
-docker image build -t kernel528/mongodb:8.0.4-ubuntu2204 -f Dockerfile .
+docker image build -t kernel528/mongodb:8.2.3-ubuntu2204 -f Dockerfile .
 ```
 
 ### Drone Builds
@@ -61,7 +62,7 @@ docker container run -it --name mongodb-obiwan --hostname mongo-docker -d -p 270
   - This is just currently setup to support a /users route for testing.
 
 ### Docker Swarm Deployment
-- The `docker-compose-stack.yml` is the base configuration to deploy using docker swarm cluster.
+- This has been moved to the `docker-swarm` repo.  Simply update the `chegg_dev_mongo-stack.yml` file.
 - This is deployed using the `portainer` based manager for the cluster.
 - This includes a NAS hosted volume to provide data persistence.
 
