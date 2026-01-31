@@ -2,9 +2,6 @@ kind: pipeline
 type: docker
 name: v8-mongodb-amd64
 
-environment:
-  MONGODB_VERSION: 8.2.4
-
 trigger:
   branch:
     - '8'
@@ -17,13 +14,35 @@ steps:
     image: plugins/docker
     environment:
       DOCKER_BUILDKIT: 1
+    when:
+      event:
+        - pull_request
     settings:
       platforms:
         - linux/amd64
       repo: kernel528/mongodb-community-server
       tags:
-        - '${MONGODB_VERSION}-pr-${DRONE_PULL_REQUEST}-amd64'
+        - '8.2.4-pr-${DRONE_PULL_REQUEST}-amd64'
       dry_run: true
+
+  - name: mongodb-image-build-amd64-release
+    image: plugins/docker
+    environment:
+      DOCKER_BUILDKIT: 1
+    when:
+      event:
+        - push
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      platforms:
+        - linux/amd64
+      repo: kernel528/mongodb-community-server
+      tags:
+        - '8.2.4'
+        - '8.2.4-drone-build-${DRONE_BUILD_NUMBER}-amd64'
 
   # Slack notification
   - name: slack-notification
@@ -40,9 +59,6 @@ steps:
 kind: pipeline
 type: docker
 name: main-mongodb-amd64
-
-environment:
-  MONGODB_VERSION: 8.2.4
 
 trigger:
   event:
@@ -68,9 +84,6 @@ steps:
       repo: kernel528/mongodb-community-server
       tags:
         - latest
-        - '8'
-        - '${MONGODB_VERSION}'
-        - '${MONGODB_VERSION}-drone-build-${DRONE_BUILD_NUMBER}-amd64'
 
   - name: main-docker-image-build-tag
     image: plugins/docker

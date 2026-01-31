@@ -30,7 +30,7 @@ docker image tag mongodb/mongodb-community-server:${VERSION}-ubuntu2204 \
 docker image push kernel528/mongodb-community-server:${VERSION}-ubuntu2204-amd64
 ```
 2) Update `Dockerfile` to reference the new `kernel528/mongodb-community-server` tag.
-3) Update `.drone.yml` tags as needed (CI publishes `latest` and version tags on `main` push and tags).
+3) Update `.drone.yml` tags as needed (CI publishes `latest`, `8`, and explicit version tags on `main` push and tags, for example `8.2.4` and `8.2.4-drone-build-<build>-amd64`). This step is manual today, so keep the tags in sync with the mirrored base image.
 4) Validate via the swarm stack (see below).
 
 ### Build Base Image Locally
