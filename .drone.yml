@@ -97,6 +97,11 @@ steps:
     commands:
       - cat /etc/os-release
       - mongod --version
+      - mkdir -p /tmp/mongo-data
+      - mongod --dbpath /tmp/mongo-data --bind_ip 127.0.0.1 --fork --logpath /tmp/mongod.log
+      - mongosh --quiet --eval "db.runCommand({ ping: 1 })"
+      - mongosh --quiet --eval "db.smoke.insertOne({ ok: 1 }); printjson(db.smoke.findOne({ ok: 1 }))"
+      - mongod --shutdown --dbpath /tmp/mongo-data
 
   # Slack notification
   - name: slack-notification
