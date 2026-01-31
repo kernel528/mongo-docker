@@ -82,7 +82,7 @@ steps:
         from_secret: docker_password
       repo: kernel528/mongodb-community-server
       tags:
-        - ${DRONE_TAG}
+        - '${DRONE_TAG}'
 
   # Test docker image
   - name: latest-mongodb-amd64-test
@@ -114,7 +114,7 @@ steps:
       - 'mongod --dbpath /tmp/mongo-data --bind_ip 127.0.0.1 --fork --logpath /tmp/mongod.log'
       - 'export MONGO_URI="mongodb://127.0.0.1:27017/seed"'
       - 'bash mongo-seed/init.sh'
-      - 'mongosh --quiet --eval "printjson(db.getSiblingDB('\''seed'\'').getCollectionNames())"'
+      - "mongosh --quiet --eval \"printjson(db.getSiblingDB('seed').getCollectionNames())\""
       - 'mongod --shutdown --dbpath /tmp/mongo-data'
 
   # Slack notification
