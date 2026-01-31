@@ -6,8 +6,9 @@ do
     sleep 5
 done
 
-# Import each JSON file in the /collections directory
-for file in /collections/sample_*/*.json
+# Import each JSON file in the collections directory
+COLLECTIONS_DIR="${COLLECTIONS_DIR:-/collections}"
+for file in "${COLLECTIONS_DIR}"/sample_*/*.json
 do
     collection=$(basename "$file" .json)
     echo "Importing $file into collection $collection"
