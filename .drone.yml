@@ -103,6 +103,22 @@ steps:
       - mongosh --quiet --eval "db.smoke.insertOne({ ok: 1 }); printjson(db.smoke.findOne({ ok: 1 }))"
       - mongod --shutdown --dbpath /tmp/mongo-data
 
+  - name: mongo-seed-smoke-test
+    image: kernel528/mongodb-community-server:latest
+    when:
+      branch:
+        - main
+      event:
+        - push
+    commands:
+      - mkdir -p /tmp/mongo-data /collections
+      - cp -R mongo-seed/collections/* /collections/
+      - mongod --dbpath /tmp/mongo-data --bind_ip 127.0.0.1 --fork --logpath /tmp/mongod.log
+      - export MONGO_URI="mongodb://127.0.0.1:27017/seed"
+      - bash mongo-seed/init.sh
+      - mongosh --quiet --eval "printjson(db.getSiblingDB('seed').getCollectionNames())"
+      - mongod --shutdown --dbpath /tmp/mongo-data
+
   # Slack notification
   - name: slack-notification
     image: plugins/slack
