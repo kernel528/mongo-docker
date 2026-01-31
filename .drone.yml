@@ -2,13 +2,16 @@ kind: pipeline
 type: docker
 name: v8-mongodb-amd64
 
+environment:
+  MONGODB_VERSION: 8.2.4
+
 trigger:
   branch:
     - '8'
   event:
     - pull_request
 
-# Build the docker image for amd64 architecture
+# Build the docker image for amd64 architecture (PR validation only)
 steps:
   - name: mongodb-image-build-amd64
     image: plugins/docker
@@ -17,16 +20,10 @@ steps:
     settings:
       platforms:
         - linux/amd64
-      username:
-        from_secret: docker_username
-      password:
-        from_secret: docker_password
-      repo: kernel528/mongodb
+      repo: kernel528/mongodb-community-server
       tags:
-        - latest
-        - '8'
-        - '8.2.3'
-        - '8.2.3-drone-build-${DRONE_BUILD_NUMBER}-amd64'
+        - '${MONGODB_VERSION}-pr-${DRONE_PULL_REQUEST}-amd64'
+      dry_run: true
 
   # Slack notification
   - name: slack-notification
@@ -44,6 +41,9 @@ kind: pipeline
 type: docker
 name: main-mongodb-amd64
 
+environment:
+  MONGODB_VERSION: 8.2.4
+
 trigger:
   event:
     - push
@@ -55,6 +55,25 @@ trigger:
 steps:
   - name: main-docker-image-build
     image: plugins/docker
+    environment:
+      DOCKER_BUILDKIT: 1
+    when:
+      event:
+        - push
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: kernel528/mongodb-community-server
+      tags:
+        - latest
+        - '8'
+        - '${MONGODB_VERSION}'
+        - '${MONGODB_VERSION}-drone-build-${DRONE_BUILD_NUMBER}-amd64'
+
+  - name: main-docker-image-build-tag
+    image: plugins/docker
     when:
       event:
         - tag
@@ -63,13 +82,13 @@ steps:
         from_secret: docker_username
       password:
         from_secret: docker_password
-      repo: kernel528/mongodb
+      repo: kernel528/mongodb-community-server
       tags:
         - ${DRONE_TAG}
 
   # Test docker image
   - name: latest-mongodb-amd64-test
-    image: kernel528/mongodb:latest
+    image: kernel528/mongodb-community-server:latest
     when:
       branch:
         - main
