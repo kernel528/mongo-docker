@@ -8,25 +8,41 @@ trigger:
   event:
     - pull_request
 
-# Build the docker image for amd64 architecture
+# Build the docker image for amd64 architecture (PR validation only)
 steps:
   - name: mongodb-image-build-amd64
     image: plugins/docker
     environment:
       DOCKER_BUILDKIT: 1
+    when:
+      event:
+        - pull_request
     settings:
       platforms:
         - linux/amd64
+      repo: kernel528/mongodb-community-server
+      tags:
+        - '8.2.4-pr-${DRONE_PULL_REQUEST}-amd64'
+      dry_run: true
+
+  - name: mongodb-image-build-amd64-release
+    image: plugins/docker
+    environment:
+      DOCKER_BUILDKIT: 1
+    when:
+      event:
+        - push
+    settings:
       username:
         from_secret: docker_username
       password:
         from_secret: docker_password
-      repo: kernel528/mongodb
+      platforms:
+        - linux/amd64
+      repo: kernel528/mongodb-community-server
       tags:
-        - latest
-        - '8'
-        - '8.2.3'
-        - '8.2.3-drone-build-${DRONE_BUILD_NUMBER}-amd64'
+        - '8.2.4'
+        - '8.2.4-drone-build-${DRONE_BUILD_NUMBER}-amd64'
 
   # Slack notification
   - name: slack-notification
@@ -55,6 +71,22 @@ trigger:
 steps:
   - name: main-docker-image-build
     image: plugins/docker
+    environment:
+      DOCKER_BUILDKIT: 1
+    when:
+      event:
+        - push
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: kernel528/mongodb-community-server
+      tags:
+        - latest
+
+  - name: main-docker-image-build-tag
+    image: plugins/docker
     when:
       event:
         - tag
@@ -63,21 +95,42 @@ steps:
         from_secret: docker_username
       password:
         from_secret: docker_password
-      repo: kernel528/mongodb
+      repo: kernel528/mongodb-community-server
       tags:
-        - ${DRONE_TAG}
+        - '${DRONE_TAG}'
 
   # Test docker image
   - name: latest-mongodb-amd64-test
-    image: kernel528/mongodb:latest
+    image: kernel528/mongodb-community-server:latest
     when:
       branch:
         - main
       event:
         - push
     commands:
-      - cat /etc/os-release
-      - mongod --version
+      - 'cat /etc/os-release'
+      - 'mongod --version'
+      - 'mkdir -p /tmp/mongo-data'
+      - 'mongod --dbpath /tmp/mongo-data --bind_ip 127.0.0.1 --fork --logpath /tmp/mongod.log'
+      - 'mongosh --quiet --eval "db.runCommand({ ping: 1 })"'
+      - 'mongosh --quiet --eval "db.smoke.insertOne({ ok: 1 }); printjson(db.smoke.findOne({ ok: 1 }))"'
+      - 'mongod --shutdown --dbpath /tmp/mongo-data'
+
+  - name: mongo-seed-smoke-test
+    image: kernel528/mongodb-community-server:latest
+    when:
+      branch:
+        - main
+      event:
+        - push
+    commands:
+      - 'mkdir -p /tmp/mongo-data /collections'
+      - 'cp -R mongo-seed/collections/* /collections/'
+      - 'mongod --dbpath /tmp/mongo-data --bind_ip 127.0.0.1 --fork --logpath /tmp/mongod.log'
+      - 'export MONGO_URI="mongodb://127.0.0.1:27017/seed"'
+      - 'bash mongo-seed/init.sh'
+      - "mongosh --quiet --eval \"printjson(db.getSiblingDB('seed').getCollectionNames())\""
+      - 'mongod --shutdown --dbpath /tmp/mongo-data'
 
   # Slack notification
   - name: slack-notification
