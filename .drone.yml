@@ -124,10 +124,11 @@ steps:
       event:
         - push
     commands:
-      - 'mkdir -p /tmp/mongo-data /collections'
-      - 'cp -R mongo-seed/collections/* /collections/'
+      - 'mkdir -p /tmp/mongo-data /tmp/collections'
+      - 'cp -R mongo-seed/collections/* /tmp/collections/'
       - 'mongod --dbpath /tmp/mongo-data --bind_ip 127.0.0.1 --fork --logpath /tmp/mongod.log'
       - 'export MONGO_URI="mongodb://127.0.0.1:27017/seed"'
+      - 'export COLLECTIONS_DIR="/tmp/collections"'
       - 'bash mongo-seed/init.sh'
       - "mongosh --quiet --eval \"printjson(db.getSiblingDB('seed').getCollectionNames())\""
       - 'mongod --shutdown --dbpath /tmp/mongo-data'
