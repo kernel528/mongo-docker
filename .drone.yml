@@ -20,7 +20,7 @@ steps:
         - linux/amd64
       repo: kernel528/mongodb-community-server
       tags:
-        - '${MONGODB_VERSION}-pr-${DRONE_PULL_REQUEST}-amd64'
+        - '{{ getenv "MONGODB_VERSION" }}-pr-{{ .DRONE_PULL_REQUEST }}-amd64'
       dry_run: true
 
   # Slack notification
@@ -65,8 +65,8 @@ steps:
       tags:
         - latest
         - '8'
-        - '${MONGODB_VERSION}'
-        - '${MONGODB_VERSION}-drone-build-${DRONE_BUILD_NUMBER}-amd64'
+        - '{{ getenv "MONGODB_VERSION" }}'
+        - '{{ getenv "MONGODB_VERSION" }}-drone-build-{{ .DRONE_BUILD_NUMBER }}-amd64'
 
   - name: main-docker-image-build-tag
     image: plugins/docker
