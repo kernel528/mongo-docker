@@ -1,5 +1,31 @@
 kind: pipeline
 type: docker
+name: v8-2-4-mongodb-amd64
+
+trigger:
+  branch:
+    - '8.2.4'
+  event:
+    - push
+    - pull_request
+
+# Validate version branch builds without publishing
+steps:
+  - name: mongodb-image-build-amd64
+    image: plugins/docker
+    environment:
+      DOCKER_BUILDKIT: 1
+    settings:
+      platforms:
+        - linux/amd64
+      repo: kernel528/mongodb-community-server
+      tags:
+        - '8.2.4-branch-${DRONE_BUILD_NUMBER}-amd64'
+      dry_run: true
+---
+
+kind: pipeline
+type: docker
 name: v8-mongodb-amd64
 
 trigger:
@@ -43,6 +69,39 @@ steps:
       tags:
         - '8.2.4'
         - '8.2.4-drone-build-${DRONE_BUILD_NUMBER}-amd64'
+
+  - name: version-mongodb-amd64-test
+    image: kernel528/mongodb-community-server:8.2.4
+    when:
+      branch:
+        - '8'
+      event:
+        - push
+    commands:
+      - 'cat /etc/os-release'
+      - 'mongod --version'
+      - 'mkdir -p /tmp/mongo-data'
+      - 'mongod --dbpath /tmp/mongo-data --bind_ip 127.0.0.1 --fork --logpath /tmp/mongod.log'
+      - 'mongosh --quiet --eval "db.runCommand({ ping: 1 })"'
+      - 'mongosh --quiet --eval "db.smoke.insertOne({ ok: 1 }); printjson(db.smoke.findOne({ ok: 1 }))"'
+      - 'mongod --shutdown --dbpath /tmp/mongo-data'
+
+  - name: version-mongo-seed-smoke-test
+    image: kernel528/mongodb-community-server:8.2.4
+    when:
+      branch:
+        - '8'
+      event:
+        - push
+    commands:
+      - 'mkdir -p /tmp/mongo-data /tmp/collections'
+      - 'cp -R mongo-seed/collections/* /tmp/collections/'
+      - 'mongod --dbpath /tmp/mongo-data --bind_ip 127.0.0.1 --fork --logpath /tmp/mongod.log'
+      - 'export MONGO_URI="mongodb://127.0.0.1:27017/seed"'
+      - 'export COLLECTIONS_DIR="/tmp/collections"'
+      - 'bash mongo-seed/init.sh'
+      - "mongosh --quiet --eval \"printjson(db.getSiblingDB('seed').getCollectionNames())\""
+      - 'mongod --shutdown --dbpath /tmp/mongo-data'
 
   # Slack notification
   - name: slack-notification
