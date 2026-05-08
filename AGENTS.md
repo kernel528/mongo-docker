@@ -2,14 +2,10 @@
 
 ## Project Structure & Module Organization
 - `Dockerfile` builds the custom MongoDB image used in CI and local builds.
-- `docker-compose.yml` runs MongoDB plus the `mongo-seed` container for data loading.
-- `docker-compose-stack.yml` is the swarm/Portainer stack definition with an NFS-backed volume.
-- `docker-compose-mongodb-community.yml` is a minimal community server example.
 - `mongo-seed/` contains the seed image (`Dockerfile`), `init.sh`, and JSON data under `collections/`.
 
 ## Build, Test, and Development Commands
 - `docker image build -t kernel528/mongodb-community-server:8.2.4-ubuntu2204-amd64 -f Dockerfile .` builds the image locally.
-- `docker-compose up --build` starts MongoDB plus the seed container and imports JSON data.
 - `docker container run -it --name mongodb-obiwan -d -p 27017:27017 -v mongo-obiwan-data:/data/db kernel528/mongodb-community-server:8.2.4-ubuntu2204-amd64` runs a standalone MongoDB container.
 - `docker stack deploy -c ../docker-swarm/stacks/mongo-stack.yml mongo` validates the image in the local swarm stack.
 - Drone CI in `.drone.yml` builds and tags images, runs a `mongosh` ping/CRUD smoke check, and executes `mongo-seed/init.sh`.
