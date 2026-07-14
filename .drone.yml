@@ -22,7 +22,7 @@ steps:
         - linux/amd64
       repo: kernel528/mongodb-community-server
       tags:
-        - '8.2.4-pr-${DRONE_PULL_REQUEST}-amd64'
+        - '8.2.11-pr-${DRONE_PULL_REQUEST}-amd64'
       dry_run: true
 
   - name: mongodb-image-build-amd64-release
@@ -41,11 +41,11 @@ steps:
         - linux/amd64
       repo: kernel528/mongodb-community-server
       tags:
-        - '8.2.4'
-        - '8.2.4-drone-build-${DRONE_BUILD_NUMBER}-amd64'
+        - '8.2.11'
+        - '8.2.11-drone-build-${DRONE_BUILD_NUMBER}-amd64'
 
   - name: version-mongodb-amd64-test
-    image: kernel528/mongodb-community-server:8.2.4
+    image: kernel528/mongodb-community-server:8.2.11
     when:
       branch:
         - '8'
@@ -61,7 +61,7 @@ steps:
       - 'mongod --shutdown --dbpath /tmp/mongo-data'
 
   - name: version-mongo-seed-smoke-test
-    image: kernel528/mongodb-community-server:8.2.4
+    image: kernel528/mongodb-community-server:8.2.11
     when:
       branch:
         - '8'

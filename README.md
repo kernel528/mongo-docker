@@ -7,9 +7,6 @@ This repository mirrors the official `mongodb/mongodb-community-server` image. T
 ### Project Structure
 ```
 project-root/
-├── docker-compose.yml
-├── docker-compose-stack.yml
-├── docker-compose-mongodb-community.yml
 ├── Dockerfile
 ├── mongo-seed/
 │   ├── Dockerfile
@@ -22,7 +19,7 @@ project-root/
 ### Workflow: Mirror Upstream Image
 1) Pull the latest upstream image and retag it for Docker Hub:
 ```bash
-VERSION=8.2.3
+VERSION=8.2.11
 
 docker image pull mongodb/mongodb-community-server:${VERSION}-ubuntu2204 --platform linux/amd64
 docker image tag mongodb/mongodb-community-server:${VERSION}-ubuntu2204 \
@@ -35,7 +32,7 @@ docker image push kernel528/mongodb-community-server:${VERSION}-ubuntu2204-amd64
 
 ### Build Base Image Locally
 ```bash
-docker image build -t kernel528/mongodb:${VERSION}-ubuntu2204 -f Dockerfile .
+docker image build -t kernel528/mongodb-community-server:${VERSION}-ubuntu2204-amd64 -f Dockerfile .
 ```
 
 ### Docker Swarm Validation
@@ -53,9 +50,6 @@ docker container run -it --name mongodb-obiwan --hostname mongo-docker -d \
 - No-auth example: `mongodb://localhost:27017`
 - With auth: `mongodb://<user>:<pass>@localhost:27017/?authSource=admin`
 
-### How to Use - docker-compose (Work in Progress)
-```bash
-docker-compose up --build
-```
-- The `mongo-seed` container runs `mongo-seed/init.sh` and imports all JSON files under `mongo-seed/collections/sample_*/*.json`.
-- Ensure required environment variables are set (e.g., `MONGO_INITDB_ROOT_USERNAME`, `MONGO_INITDB_ROOT_PASSWORD`, `MONGO_HOSTNAME`, `MONGO_DATABASE_NAME`).
+### Seed Data
+The `mongo-seed/init.sh` script imports JSON files under `mongo-seed/collections/sample_*/*.json`.
+Set `MONGO_URI` to the target database and optionally set `COLLECTIONS_DIR` to override the default collections path.
