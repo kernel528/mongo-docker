@@ -19,7 +19,7 @@ project-root/
 ### Workflow: Mirror Upstream Image
 1) Pull the latest upstream image and retag it for Docker Hub:
 ```bash
-VERSION=8.2.4
+VERSION=8.2.11
 
 docker image pull mongodb/mongodb-community-server:${VERSION}-ubuntu2204 --platform linux/amd64
 docker image tag mongodb/mongodb-community-server:${VERSION}-ubuntu2204 \
