@@ -27,8 +27,14 @@ docker image tag mongodb/mongodb-community-server:${VERSION}-ubuntu2204 \
 docker image push kernel528/mongodb-community-server:${VERSION}-ubuntu2204-amd64
 ```
 2) Update `Dockerfile` to reference the new `kernel528/mongodb-community-server` tag.
-3) Update `.drone.yml` tags as needed (CI publishes `latest`, `8`, and explicit version tags on `main` push and tags, for example `8.2.4` and `8.2.4-drone-build-<build>-amd64`). This step is manual today, so keep the tags in sync with the mirrored base image.
-4) Validate via the swarm stack (see below).
+3) Review `mongo-seed/Dockerfile` at the same time. Keep it on the same mirrored MongoDB base unless an intentional compatibility reason for a different version is documented.
+4) Update `.drone.yml` tags as needed. PRs targeting `8` perform a dry-run build, pushes to `main` publish and test `latest`, and Git tags publish the exact `${DRONE_TAG}` release. The upstream mirror push remains manual, so keep the Dockerfile and CI test tags aligned with that mirrored base image.
+5) Build and smoke-test before publishing an immutable release tag.
+6) Update and validate the Swarm stack only after the release tag resolves.
+
+### Repository Relationships
+
+This repository follows an independent MongoDB upstream mirror cadence and does not consume `kernel528/alpine`. [`docker-workspace`](https://github.com/kernel528/docker-workspace) coordinates its release state, while [`docker-swarm`](https://github.com/kernel528/docker-swarm) consumes the published image through `stacks/mongo-stack.yml`. Keep mirroring, image release, and persistence-sensitive Swarm deployment as separate reviewed steps.
 
 ### Build Base Image Locally
 ```bash
