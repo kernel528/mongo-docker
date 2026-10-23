@@ -1,4 +1,4 @@
-[![Build Status](http://drone.kernelsanders.biz:8080/api/badges/kernel528/mongo-docker/status.svg?ref=refs/heads/main)](http://drone.kernelsanders.biz:8080/kernel528/mongo-docker)
+[![Build Status](https://drone.kernelsanders.biz:8443/api/badges/kernel528/mongo-docker/status.svg?ref=refs/heads/main)](https://drone.kernelsanders.biz:8443/kernel528/mongo-docker)
 [![Latest Version](https://img.shields.io/github/v/tag/kernel528/mongo-docker)](https://github.com/kernel528/mongo-docker/releases/latest)
 
 ### MongoDB Community Edition Docker Image
