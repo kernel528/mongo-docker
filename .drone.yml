@@ -1,10 +1,10 @@
 kind: pipeline
 type: docker
-name: v8-mongodb-amd64
+name: v9-mongodb-amd64
 
 trigger:
   branch:
-    - '8'
+    - '9'
   event:
     - pull_request
 
@@ -22,7 +22,7 @@ steps:
         - linux/amd64
       repo: kernel528/mongodb-community-server
       tags:
-        - '8.2.12-pr-${DRONE_PULL_REQUEST}-amd64'
+        - '9.0.4-pr-${DRONE_PULL_REQUEST}-amd64'
       dry_run: true
 
   - name: mongodb-image-build-amd64-release
@@ -41,14 +41,14 @@ steps:
         - linux/amd64
       repo: kernel528/mongodb-community-server
       tags:
-        - '8.2.12'
-        - '8.2.12-drone-build-${DRONE_BUILD_NUMBER}-amd64'
+        - '9.0.4'
+        - '9.0.4-drone-build-${DRONE_BUILD_NUMBER}-amd64'
 
   - name: version-mongodb-amd64-test
-    image: kernel528/mongodb-community-server:8.2.12
+    image: kernel528/mongodb-community-server:9.0.4
     when:
       branch:
-        - '8'
+        - '9'
       event:
         - push
     commands:
@@ -61,10 +61,10 @@ steps:
       - 'mongod --shutdown --dbpath /tmp/mongo-data'
 
   - name: version-mongo-seed-smoke-test
-    image: kernel528/mongodb-community-server:8.2.12
+    image: kernel528/mongodb-community-server:9.0.4
     when:
       branch:
-        - '8'
+        - '9'
       event:
         - push
     commands:
