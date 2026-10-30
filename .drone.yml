@@ -45,12 +45,12 @@ steps:
         - '9.0.4-drone-build-${DRONE_BUILD_NUMBER}-amd64'
 
   - name: version-mongodb-amd64-test
-    image: kernel528/mongodb-community-server:9.0.4
+    image: kernel528/mongodb-community-server:9.0.4-ubuntu2204-amd64
     when:
       branch:
         - '9'
       event:
-        - push
+        - pull_request
     commands:
       - 'cat /etc/os-release'
       - 'mongod --version'
@@ -61,12 +61,12 @@ steps:
       - 'mongod --shutdown --dbpath /tmp/mongo-data'
 
   - name: version-mongo-seed-smoke-test
-    image: kernel528/mongodb-community-server:9.0.4
+    image: kernel528/mongodb-community-server:9.0.4-ubuntu2204-amd64
     when:
       branch:
         - '9'
       event:
-        - push
+        - pull_request
     commands:
       - 'mkdir -p /tmp/mongo-data /tmp/collections'
       - 'cp -R mongo-seed/collections/* /tmp/collections/'

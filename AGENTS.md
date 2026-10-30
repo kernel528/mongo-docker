@@ -6,8 +6,8 @@
 
 ## Build, Test, and Development Commands
 - `docker image build -t kernel528/mongodb-community-server:9.0.4-ubuntu2204-amd64 -f Dockerfile .` builds the image locally.
-- `docker container run -it --name mongodb-obiwan -d -p 27017:27017 -v mongo-obiwan-data:/data/db kernel528/mongodb-community-server:8.2.11-ubuntu2204-amd64` runs a standalone MongoDB container.
-- `docker stack deploy -c ../docker-swarm/stacks/mongo-stack.yml mongo` validates the image in the local swarm stack.
+- `docker container run -it --name mongodb-obiwan -d -p 27017:27017 -v mongo-obiwan-data:/data/db kernel528/mongodb-community-server:9.0.4-ubuntu2204-amd64` runs a standalone MongoDB container.
+- `docker stack deploy -c ../docker-swarm/stacks/mongo-stack.yml mongodb` validates the image in the local swarm stack.
 - Drone CI in `.drone.yml` builds and tags images, runs a `mongosh` ping/CRUD smoke check, and executes `mongo-seed/init.sh`.
   - When refreshing versions, update the explicit tags in `.drone.yml` (e.g., `9.0.4` and `9.0.4-drone-build-<build>-amd64`).
 

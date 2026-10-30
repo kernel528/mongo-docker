@@ -28,10 +28,10 @@ docker image inspect mongodb/mongodb-community-server:${VERSION}-ubuntu2204 \
   --format '{{index .RepoDigests 0}}'
 docker image push kernel528/mongodb-community-server:${VERSION}-ubuntu2204-amd64
 ```
-For this refresh, the upstream image digest is `sha256:ce9429b03cdf1156891c192e1e702d0475c2c9ace5bb5d80496b55ccd63a4acf`.
+For this refresh, the upstream image digest is `sha256:dfbdcffe2186ec2809473b833278f0663dd9a70d42d2e1b332be4bed870dd40c`.
 2) Update `Dockerfile` to reference the new `kernel528/mongodb-community-server` tag.
 3) Review `mongo-seed/Dockerfile` at the same time. Keep it on the same mirrored MongoDB base unless an intentional compatibility reason for a different version is documented.
-4) Update `.drone.yml` tags as needed. PRs targeting `9` perform a dry-run build, pushes to `main` publish and test `latest`, and Git tags publish the exact `${DRONE_TAG}` release. The upstream mirror push remains manual, so keep the Dockerfile and CI test tags aligned with that mirrored base image.
+4) Update `.drone.yml` tags as needed. PRs targeting `9` perform a dry-run build plus ping/CRUD and seed-import smoke tests against the mirrored base image, pushes to `main` publish and test `latest`, and Git tags publish the exact `${DRONE_TAG}` release. The upstream mirror push remains manual, so keep the Dockerfile and CI test tags aligned with that mirrored base image.
 5) Build and smoke-test before publishing an immutable release tag.
 6) Update and validate the Swarm stack only after the release tag resolves.
 
@@ -47,7 +47,7 @@ docker image build -t kernel528/mongodb-community-server:${VERSION}-ubuntu2204-a
 ### Docker Swarm Validation
 This repo is tested via the external stack file:
 ```bash
-docker stack deploy -c ../docker-swarm/stacks/mongo-stack.yml mongo
+docker stack deploy -c ../docker-swarm/stacks/mongo-stack.yml mongodb
 ```
 
 ### How to Use - Standalone
